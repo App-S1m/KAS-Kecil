@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BukuKas FinTech</title>
+    
+    <!-- PWA Manifest Link Placeholder -->
+    <link id="manifest-link" rel="manifest" href="">
+    <meta name="theme-color" content="#764ba2">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135679.png" type="image/png">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* TEMA 3: VIBRANT FINTECH */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg-color: #f4f7fb;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #a0aec0;
+            --success: #38b259;
+            --danger: #e53e3e;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 10px 25px rgba(118, 75, 162, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; padding-bottom: 80px; }
+
+        /* HEADER GRADIENT */
+        .top-bg {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 220px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            z-index: -1;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+        /* HEADER SECTION */
+        .header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 25px; padding-top: 10px; }
+        .header h1 { font-size: 24px; font-weight: 600; }
+        .header .actions button {
+            background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; backdrop-filter: blur(5px); transition: 0.3s;
+            margin-left: 10px;
+        }
+
+        /* SUMMARY CARD */
+        .summary-card {
+            background: var(--card-bg); border-radius: var(--radius-lg); padding: 25px;
+            box-shadow: var(--shadow); text-align: center; margin-bottom: 25px;
+        }
+        .summary-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 5px; }
+        .summary-card h2 { font-size: 32px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; }
+        
+        .stats { display: flex; justify-content: space-between; border-top: 1px solid #edf2f7; padding-top: 15px; }
+        .stat-item { width: 50%; }
+        .stat-item:first-child { border-right: 1px solid #edf2f7; }
+        .stat-item p { font-size: 12px; margin-bottom: 2px; }
+        .stat-item h4 { font-size: 16px; font-weight: 600; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+
+        /* TRANSACTIONS SECTION */
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); }
+        
+        .transaction-list { display: flex; flex-direction: column; gap: 15px; }
+        .tx-card {
+            background: var(--card-bg); border-radius: var(--radius-md); padding: 15px 20px;
+            display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        .tx-card:active { transform: scale(0.98); }
+        
+        .tx-info { display: flex; align-items: center; gap: 15px; }
+        .tx-icon {
+            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 20px; color: white;
+        }
+        .icon-income { background: linear-gradient(135deg, #38b259, #2c8a45); }
+        .icon-expense { background: linear-gradient(135deg, #fc8181, #e53e3e); }
+        
+        .tx-details h4 { font-size: 15px; font-weight: 600; color: var(--text-dark); }
+        .tx-details p { font-size: 12px; color: var(--text-muted); }
+        .tx-amount { text-align: right; }
+        .tx-amount h4 { font-size: 15px; font-weight: 700; }
+        .tx-del-btn { color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 5px; margin-left: 10px;}
+
+        /* FLOATING ACTION BUTTON (FAB) */
+        .fab {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 65px; height: 65px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; font-size: 24px; border: none; box-shadow: 0 10px 25px rgba(118, 75, 162, 0.4);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100;
+            transition: 0.3s;
+        }
+        .fab:hover { transform: translateX(-50%) scale(1.05); }
+
+        /* MODAL OVERLAY */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 1000;
+            justify-content: center; align-items: flex-end; /* Bottom sheet style */
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 600px; padding: 30px 20px;
+            border-top-left-radius: 30px; border-top-right-radius: 30px;
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #e2e8f0;
+            font-size: 15px; background: #f8fafc; outline: none; transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: white; }
+        
+        .btn-submit {
+            width: 100%; padding: 15px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(118,75,162,0.3);
+        }
+        .btn-cancel { width: 100%; padding: 15px; background: none; border: none; color: var(--text-muted); cursor: pointer; margin-top: 5px; font-weight: 600;}
+
+        /* LOGIN SCREEN */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color);
+            z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .login-box {
+            background: white; padding: 40px 30px; border-radius: var(--radius-lg);
+            width: 100%; max-width: 400px; text-align: center; box-shadow: var(--shadow);
+        }
+        .login-box h2 { color: var(--primary); margin-bottom: 5px; }
+        .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 14px; }
+        
+        /* TOAST NOTIFICATION */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center;
+            border-radius: 50px; padding: 12px 20px; position: fixed; z-index: 3000; left: 50%; transform: translateX(-50%);
+            bottom: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        /* PRINT STYLES */
+        @media print {
+            body { background: white; padding: 0; }
+            .top-bg, .fab, .header .actions, #login-screen { display: none !important; }
+            .container { max-width: 100%; padding: 0; }
+            .header { color: black; margin-bottom: 10px; }
+            .summary-card { box-shadow: none; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; }
+            .tx-card { box-shadow: none; border-bottom: 1px solid #ddd; border-radius: 0; padding: 10px 0; }
+            .tx-del-btn { display: none; }
+            .tx-icon { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            
+            /* Add Table Structure for Print */
+            .print-title { display: block; text-align: center; margin-bottom: 20px; font-size: 24px; font-weight: bold; }
+        }
+        .print-title { display: none; }
+
+        /* Loader */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 0 auto; display: none;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- PWA Manifest Script Injection -->
+    <script>
+        const manifestData = {
+            "name": "BukuKas FinTech", "short_name": "BukuKas", "start_url": ".", "display": "standalone",
+            "background_color": "#f4f7fb", "theme_color": "#764ba2",
+            "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/3135/3135679.png", "sizes": "512x512", "type": "image/png"}]
+        };
+        const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+        document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+    </script>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <div style="font-size: 50px; color: var(--primary); margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i></div>
+            <h2>BukuKas FinTech</h2>
+            <p>Admin Portal. Silakan masukkan PIN.</p>
+            <div class="form-group">
+                <input type="password" id="pinInput" placeholder="Masukkan PIN Admin" onkeypress="handleLoginEnter(event)">
+            </div>
+            <button class="btn-submit" onclick="login()" id="loginBtn"><span id="loginText">Masuk</span> <div class="loader" id="loginLoader"></div></button>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div id="app-screen" style="display: none;">
+        <div class="top-bg"></div>
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <p style="font-size: 14px; opacity: 0.9;">Halo, Admin</p>
+                    <h1>Dashboard Keuangan</h1>
+                </div>
+                <div class="actions">
+                    <button onclick="window.print()" title="Cetak Laporan"><i class="fa-solid fa-print"></i></button>
+                    <button onclick="logout()" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
+
+            <!-- Print Title (Hidden in UI) -->
+            <div class="print-title">Laporan Keuangan FinTech</div>
+
+            <!-- Summary Card -->
+            <div class="summary-card">
+                <p>Total Saldo Saat Ini</p>
+                <h2 id="totalSaldo">Rp 0</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <p>Pemasukan</p>
+                        <h4 class="text-success" id="totalPemasukan"><i class="fa-solid fa-arrow-down"></i> Rp 0</h4>
+                    </div>
+                    <div class="stat-item">
+                        <p>Pengeluaran</p>
+                        <h4 class="text-danger" id="totalPengeluaran"><i class="fa-solid fa-arrow-up"></i> Rp 0</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction List -->
+            <h3 class="section-title">Riwayat Transaksi</h3>
+            <div class="transaction-list" id="txList">
+                <!-- Transactions will be loaded here via JS -->
+            </div>
+        </div>
+
+        <!-- FAB (Add Button) -->
+        <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <!-- ADD TRANSACTION MODAL -->
+    <div class="modal" id="txModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; text-align: center;">Tambah Transaksi</h3>
+            <form id="txForm" onsubmit="saveTransaction(event)">
+                <div class="form-group">
+                    <label>Jenis Transaksi</label>
+                    <select id="txType" required>
+                        <option value="in">Pemasukan (Income)</option>
+                        <option value="out">Pengeluaran (Expense)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nominal (Rp)</label>
+                    <input type="number" id="txAmount" placeholder="Contoh: 50000" required>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan</label>
+                    <input type="text" id="txDesc" placeholder="Contoh: Beli Bahan Baku" required>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="txDate" required>
+                </div>
+                <button type="submit" class="btn-submit" id="saveBtn">Simpan Transaksi</button>
+                <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast">Notifikasi</div>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI URL GAS (GANTI URL INI)
+        // ==========================================
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyzqRXF9fKVQPHFDvOTFEPdqKqdpye90mgTxXdHLlVcvs-EB22Xcv4nowv2L-9e3cYvZA/exec"; 
+        
+        let sessionPin = "";
+        let transactions = {};
+
+        // Format Currency
+        const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+
+        // Toast Logic
+        function showToast(msg, type="info") {
+            const toast = document.getElementById("toast");
+            toast.innerHTML = msg;
+            toast.style.backgroundColor = type === "success" ? "#38b259" : type === "error" ? "#e53e3e" : "#333";
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function handleLoginEnter(e) { if(e.key === 'Enter') login(); }
+
+        // Login & Fetch Data dari GAS
+        async function login() {
+            const pin = document.getElementById("pinInput").value;
+            if(!pin) return showToast("Masukkan PIN!", "error");
+
+            document.getElementById("loginText").style.display = "none";
+            document.getElementById("loginLoader").style.display = "block";
+            document.getElementById("loginBtn").disabled = true;
+
+            try {
+                // Fetch to GAS GET endpoint
+                const res = await fetch(`${GAS_URL}?action=read&pass=${pin}`);
+                const responseData = await res.json();
+
+                if (responseData.status === "success") {
+                    sessionPin = pin;
+                    transactions = responseData.data || {};
+                    
+                    document.getElementById("login-screen").style.display = "none";
+                    document.getElementById("app-screen").style.display = "block";
+                    showToast("Login Berhasil!", "success");
+                    
+                    // Set default date in modal
+                    document.getElementById('txDate').valueAsDate = new Date();
+                    
+                    renderDashboard();
+                } else {
+                    showToast(responseData.message || "PIN Salah!", "error");
+                }
+            } catch (error) {
+                console.error(error);
+                showToast("Koneksi ke server gagal. Periksa URL GAS.", "error");
+            } finally {
+                document.getElementById("loginLoader").style.display = "none";
+                document.getElementById("loginText").style.display = "inline";
+                document.getElementById("loginBtn").disabled = false;
+            }
+        }
+
+        // Render UI
+        function renderDashboard() {
+            const listContainer = document.getElementById("txList");
+            listContainer.innerHTML = "";
+            
+            let totalIn = 0, totalOut = 0;
+            
+            // Konversi object transactions ke array dan urutkan berdasar waktu
+            const txArray = Object.keys(transactions).map(key => ({ id: key, ...transactions[key] }));
+            txArray.sort((a, b) => new Date(b.date) - new Date(a.date)); // descending
+
+            if(txArray.length === 0) {
+                listContainer.innerHTML = "<p style='text-align:center; color:#a0aec0; padding: 20px;'>Belum ada transaksi.</p>";
+            }
+
+            txArray.forEach(tx => {
+                const amount = parseInt(tx.amount);
+                const isIncome = tx.type === 'in';
+                if(isIncome) totalIn += amount; else totalOut += amount;
+
+                const iconClass = isIncome ? "fa-arrow-down" : "fa-bag-shopping";
+                const bgClass = isIncome ? "icon-income" : "icon-expense";
+                const sign = isIncome ? "+" : "-";
+                const colorClass = isIncome ? "text-success" : "text-danger";
+
+                listContainer.innerHTML += `
+                    <div class="tx-card">
+                        <div class="tx-info">
+                            <div class="tx-icon ${bgClass}"><i class="fa-solid ${iconClass}"></i></div>
+                            <div class="tx-details">
+                                <h4>${tx.desc}</h4>
+                                <p>${tx.date}</p>
+                            </div>
+                        </div>
+                        <div class="tx-amount">
+                            <h4 class="${colorClass}">${sign} ${formatRupiah(amount)}</h4>
+                            <button class="tx-del-btn" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("totalPemasukan").innerHTML = `<i class="fa-solid fa-arrow-down"></i> ${formatRupiah(totalIn)}`;
+            document.getElementById("totalPengeluaran").innerHTML = `<i class="fa-solid fa-arrow-up"></i> ${formatRupiah(totalOut)}`;
+            document.getElementById("totalSaldo").innerText = formatRupiah(totalIn - totalOut);
+        }
+
+        // Add Transaction -> POST to GAS
+        async function saveTransaction(e) {
+            e.preventDefault();
+            const btn = document.getElementById("saveBtn");
+            btn.innerText = "Menyimpan...";
+            btn.disabled = true;
+
+            const newTx = {
+                type: document.getElementById("txType").value,
+                amount: document.getElementById("txAmount").value,
+                desc: document.getElementById("txDesc").value,
+                date: document.getElementById("txDate").value,
+                timestamp: new Date().getTime()
+            };
+
+            try {
+                const res = await fetch(`${GAS_URL}?pass=${sessionPin}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'add', data: newTx }) // plain text stringify to avoid CORS preflight options
+                });
+                const responseData = await res.json();
+
+                if(responseData.status === "success") {
+                    transactions[responseData.id] = newTx;
+                    renderDashboard();
+                    closeModal();
+                    document.getElementById("txForm").reset();
+                    document.getElementById('txDate').valueAsDate = new Date();
+                    showToast("Transaksi ditambahkan!", "success");
+                } else {
+                    showToast("Gagal menyimpan data.", "error");
+                }
+            } catch (error) {
+                showToast("Error koneksi!", "error");
+            } finally {
+                btn.innerText = "Simpan Transaksi";
+                btn.disabled = false;
+            }
+        }
+
+        // Delete Transaction -> POST to GAS (action: delete)
+        async function deleteTransaction(id) {
+            if(!confirm("Hapus transaksi ini?")) return;
+            
+            showToast("Menghapus...", "info");
+            try {
+                const res = await fetch(`${GAS_URL}?pass=${sessionPin}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'delete', id: id })
+                });
+                const responseData = await res.json();
+
+                if(responseData.status === "success") {
+                    delete transactions[id];
+                    renderDashboard();
+                    showToast("Berhasil dihapus!", "success");
+                }
+            } catch (error) {
+                showToast("Error menghapus data!", "error");
+            }
+        }
+
+        function openModal() { document.getElementById('txModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('txModal').style.display = 'none'; }
+        function logout() { location.reload(); }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Catatan: Pendaftaran Service Worker menggunakan Blob URL tidak didukung browser.
+                // Untuk mengaktifkan PWA sepenuhnya di Blogger, Anda harus meng-host file 'sw.js' terpisah 
+                // di platform seperti Github Pages/Firebase Hosting dan memanggilnya:
+                // navigator.serviceWorker.register('https://domain-anda.com/sw.js');
+                
+                console.log('Service Worker didukung. Siap dikonfigurasi dengan file sw.js eksternal.');
+            });
+        }
+    </script>
+</body>
+</html>
